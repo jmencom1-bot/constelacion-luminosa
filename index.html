@@ -20,6 +20,7 @@
   --line:rgba(255,233,184,.55);
   --fill:rgba(255,233,184,.08);
   --halo:rgba(255,233,184,.35);
+  --lavender:#c9c5ff;
   --display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --body:'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme:dark;
@@ -40,7 +41,24 @@ body{
     radial-gradient(90% 55% at 50% 105%, var(--neb-gold), transparent 70%),
     linear-gradient(180deg, var(--night), var(--deep));
 }
-#sky{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation}
+#sky{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;z-index:1}
+#aurora{position:fixed;inset:-25%;pointer-events:none;z-index:0;opacity:.48;filter:blur(48px);background:conic-gradient(from 210deg at 50% 50%,transparent 0deg,rgba(106,135,255,.10) 65deg,rgba(205,174,255,.13) 120deg,transparent 190deg,rgba(89,174,196,.10) 260deg,transparent 360deg);animation:aurora 24s ease-in-out infinite alternate;transform:rotate(-12deg) scale(1.1)}
+@keyframes aurora{0%{transform:translate3d(-3%,2%,0) rotate(-15deg) scale(1)}100%{transform:translate3d(4%,-2%,0) rotate(12deg) scale(1.18)}}
+.ui{z-index:2}
+.progress{display:flex;align-items:center;gap:9px;color:var(--mute);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.progress-track{width:112px;height:2px;background:rgba(188,214,255,.18);overflow:hidden;border-radius:9px}
+.progress-fill{height:100%;width:0;background:var(--glow);box-shadow:0 0 10px var(--glow);transition:width .5s ease}
+#finale{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:24px;background:rgba(4,7,22,.76);backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .8s ease,visibility .8s ease}
+#finale.open{opacity:1;visibility:visible}
+.letter{position:relative;width:min(100%,440px);box-sizing:border-box;padding:clamp(26px,7vw,42px);border:1px solid rgba(255,233,184,.42);border-radius:24px;background:linear-gradient(145deg,rgba(24,31,69,.96),rgba(10,14,38,.97));box-shadow:0 0 70px rgba(161,160,255,.18),inset 0 0 35px rgba(255,233,184,.035);text-align:center;transform:translateY(18px) scale(.98);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+#finale.open .letter{transform:none}
+.letter .eyebrow{color:var(--glow)}
+.letter h2{font:italic 500 clamp(34px,8vw,48px)/1.05 var(--display);color:var(--glow);margin:16px 0}
+.letter p{font:300 16px/1.8 var(--body);color:var(--ink);margin:0 auto 24px;max-width:34ch}
+.letter .signature{font:italic 22px var(--display);color:var(--rose);margin-top:18px}
+.letter .btn{pointer-events:auto}
+@media(max-height:620px){.ui{padding-top:max(12px,env(safe-area-inset-top,0px));padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}h1{font-size:clamp(34px,8vh,52px)}.foot{gap:10px}.letter{padding:22px}.letter p{font-size:14px;line-height:1.6}}
+@media (prefers-reduced-motion: reduce){#aurora{animation:none}.caption.swap{animation:none}}
 .ui{
   position:fixed;inset:0;box-sizing:border-box;
   display:flex;flex-direction:column;justify-content:space-between;align-items:center;
@@ -90,10 +108,27 @@ h1{
   </header>
   <div class="foot">
     <p class="caption" id="caption" aria-live="polite">Un cielo pequeño, con una constelación para ti.</p>
+    <div class="progress" id="progress" aria-live="polite" hidden>
+      <span id="progressText">0 de 10 estrellas</span>
+      <span class="progress-track"><span class="progress-fill" id="progressFill"></span></span>
+    </div>
     <div class="row">
       <button class="btn" id="start" type="button">Encender el cielo</button>
       <button class="btn quiet" id="sound" type="button" aria-pressed="false" hidden>Silenciar</button>
     </div>
+  </div>
+</div>
+
+<div id="aurora" aria-hidden="true"></div>
+<div id="finale" role="dialog" aria-modal="true" aria-labelledby="finalTitle" aria-hidden="true">
+  <div class="letter">
+    <p class="eyebrow">Una última estrella</p>
+    <h2 id="finalTitle">Si pudiera dejarte algo…</h2>
+    <p>Quisiera que nunca dudes de lo valiosa que eres. Gracias por las conversaciones que se alargan sin darnos cuenta, por las risas que aparecen de la nada y por esa confianza que hace que hasta los días difíciles se sientan un poquito más ligeros.</p>
+    <p>No hace falta ponerle nombre a todo lo bonito. A veces basta con agradecer que alguien haya llegado, que se haya quedado y que, incluso a la distancia, consiga hacerte sentir acompañado.</p>
+    <p>Ojalá la vida te devuelva multiplicada toda esa luz que compartes sin darte cuenta. Sigue siendo tú, con tus ocurrencias, tus sueños y esa forma tan tuya de hacer especiales los momentos sencillos.</p>
+    <p class="signature">Con mucho cariño, para ti. ✦</p>
+    <button class="btn quiet" id="closeFinale" type="button">Volver a las estrellas</button>
   </div>
 </div>
 
@@ -104,6 +139,12 @@ h1{
   var startBtn = document.getElementById('start');
   var soundBtn = document.getElementById('sound');
   var capEl = document.getElementById('caption');
+  var progress = document.getElementById('progress');
+  var progressText = document.getElementById('progressText');
+  var progressFill = document.getElementById('progressFill');
+  var finale = document.getElementById('finale');
+  var closeFinale = document.getElementById('closeFinale');
+  var visited = Object.create(null), visitedCount = 0;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function hexRgb(h){ h = h.replace('#',''); return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]; }
@@ -121,16 +162,16 @@ h1{
     [ 0.80,-0.50, 1.2], [ 0.65, 0.10, 1.0], [ 0.30, 0.35, 1.3], [-0.05, 0.60, 2.0], [-0.40, 0.40, 1.0]
   ];
   var phrases = [
-    'Gracias por estar.',
-    'Tu risa ilumina cualquier día.',
-    'Eres de esas personas que se quedan.',
-    'Que nunca te falte luz.',
-    'Mereces cosas bonitas.',
-    'Lo que sueñas está más cerca de lo que crees.',
-    'Contigo todo pesa menos.',
-    'Hoy y siempre, un abrazo.',
-    'Brillas incluso cuando no lo notas.',
-    'Qué suerte cruzarme contigo.'
+    'Hay personas que llegan sin hacer ruido y terminan siendo parte importante de nuestros días.',
+    'Gracias por tantas risas que aparecen incluso cuando el día no viene tan bonito.',
+    'Qué bonito es poder hablar de cualquier cosa y sentir que el tiempo se pasa volando.',
+    'La distancia no borra una conversación sincera ni el cariño que se construye con ella.',
+    'Ojalá nunca te falten motivos para reírte con esa espontaneidad tan tuya.',
+    'No tienes que tenerlo todo resuelto para merecer cosas extraordinarias.',
+    'Gracias por la confianza, por escuchar y por dejarme también ser yo.',
+    'Hay noches y conversaciones que uno guarda con cariño sin necesidad de fotografiarlas.',
+    'Nunca olvides que eres mucho más capaz y valiosa de lo que a veces crees.',
+    'Qué suerte que, entre tantas casualidades, nuestros caminos se hayan encontrado.'
   ];
   var scale = [72,74,76,79,81,84,86,88,91,93];
   var k = reduce ? 0.4 : 1;
@@ -177,7 +218,7 @@ h1{
 
   /* ---------- Estado ---------- */
   var started = false, t0 = 0, chimed = [], hintShown = false;
-  var ripples = [], shooters = [], nextShoot = 0;
+  var ripples = [], shooters = [], nextShoot = 0, particles = [];
 
   function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
   function smooth(p){ return p * p * (3 - 2 * p); }
@@ -244,6 +285,22 @@ h1{
     }
   }
 
+  function drawParticles(now){
+    for (var i = particles.length - 1; i >= 0; i--){
+      var p = particles[i], age = now - p.t;
+      if (age > p.life){ particles.splice(i,1); continue; }
+      var q = age / p.life, x = p.x + p.vx * age, y = p.y + p.vy * age;
+      ctx.fillStyle = rgba(p.c, (1-q) * .9);
+      ctx.beginPath(); ctx.arc(x,y,p.r*(1-q*.45),0,6.2832); ctx.fill();
+    }
+  }
+  function burst(x,y){
+    var colors = [GLOW,ICE,ROSE,WHITE], now = performance.now()/1000;
+    for(var j=0;j<22;j++){
+      var a = Math.random()*Math.PI*2, speed = 24+Math.random()*95;
+      particles.push({x:x,y:y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,t:now,life:.55+Math.random()*.65,r:1+Math.random()*2.2,c:colors[j%colors.length]});
+    }
+  }
   function drawRipples(now){
     for (var i = ripples.length - 1; i >= 0; i--){
       var r = ripples[i], k2 = (now - r.t) / 1.8;
@@ -298,6 +355,7 @@ h1{
       }
     }
     drawRipples(now);
+    drawParticles(now);
     ctx.globalCompositeOperation = 'source-over';
     if (started && !hintShown && now - t0 > totalTime){
       hintShown = true; say('Toca las estrellas.');
@@ -419,7 +477,8 @@ h1{
     nextShoot = t0 + 5;
     startBtn.hidden = true;
     if (audioOk) soundBtn.hidden = false;
-    say('Mira cómo se encienden, una por una.');
+    progress.hidden = false;
+    say('Mira cómo se encienden, una por una. Cada estrella guarda algo bonito.');
   }
   startBtn.addEventListener('click', begin);
 
@@ -441,13 +500,40 @@ h1{
     return best;
   }
 
+  function updateProgress(){
+    progressText.textContent = visitedCount + ' de ' + P.length + ' estrellas';
+    progressFill.style.width = (visitedCount / P.length * 100) + '%';
+  }
+  function openLetter(){
+    finale.classList.add('open');
+    finale.setAttribute('aria-hidden','false');
+    closeFinale.focus();
+  }
+  function closeLetter(){
+    finale.classList.remove('open');
+    finale.setAttribute('aria-hidden','true');
+  }
+  closeFinale.addEventListener('click', closeLetter);
+  finale.addEventListener('click', function(e){ if(e.target === finale) closeLetter(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && finale.classList.contains('open')) closeLetter(); });
+
   cv.addEventListener('pointerdown', function(e){
     if (!started) return;
     var i = starAt(e.clientX, e.clientY);
     if (i < 0) return;
     playNote(scale[i % scale.length], 1);
     ripples.push({x: P[i].x, y: P[i].y, t: performance.now() / 1000});
+    burst(P[i].x + ox, P[i].y + oy);
     say(phrases[i]);
+    if (!visited[i]){
+      visited[i] = true;
+      visitedCount++;
+      updateProgress();
+      if (visitedCount === P.length){
+        say('La constelación está completa. Hay algo más esperándote…');
+        window.setTimeout(openLetter, 1300);
+      }
+    }
   });
   cv.addEventListener('pointermove', function(e){
     cv.style.cursor = (started && starAt(e.clientX, e.clientY) >= 0) ? 'pointer' : 'default';
