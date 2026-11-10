@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d22">
+<title>Los fragmentos del cielo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c20;--panel:rgba(19,26,57,.78);--line:rgba(190,205,255,.17);--white:#f3f4ff;--muted:#a4afd1;--gold:#ffe5a6;--pink:#efb9dc;--blue:#a8c8ff;--green:#a8e4cf}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;color:var(--white);font-family:Manrope,system-ui,sans-serif;background:radial-gradient(ellipse at 18% 10%,rgba(107,95,190,.2),transparent 38%),radial-gradient(ellipse at 90% 80%,rgba(53,119,160,.18),transparent 36%),linear-gradient(155deg,#080c20,#111735 60%,#090d20);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;background-image:radial-gradient(1px 1px at 12% 22%,#fff 98%,transparent),radial-gradient(1px 1px at 73% 14%,#fff 98%,transparent),radial-gradient(2px 2px at 84% 63%,#fff 98%,transparent),radial-gradient(1px 1px at 31% 78%,#fff 98%,transparent),radial-gradient(1px 1px at 56% 43%,#fff 98%,transparent),radial-gradient(2px 2px at 8% 88%,#fff 98%,transparent);background-size:310px 280px}
+.wrap{width:min(760px,100%);margin:auto;padding:22px 20px 40px;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.back{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.08em}.back:hover{color:var(--gold)}.tag,.mono{font:11px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.progress{height:3px;background:rgba(255,255,255,.1);border-radius:10px;margin:20px 0 34px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--pink),var(--gold));transition:width .6s}
+main{flex:1;display:grid;place-items:center}.screen{width:100%;animation:appear .55s ease both}@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.hero{text-align:center;padding:28px 0 42px}.orb{width:112px;height:112px;border-radius:50%;margin:0 auto 26px;display:grid;place-items:center;font-size:45px;background:radial-gradient(circle at 36% 30%,#fff1c8 0 2%,#d6b9ff 8%,#6475bd 38%,#20284e 68%,transparent 70%);box-shadow:0 0 45px rgba(172,166,255,.32),0 0 100px rgba(139,177,255,.12);animation:float 4s ease-in-out infinite}@keyframes float{50%{transform:translateY(-9px)}}
+h1,h2{font-family:"Playfair Display",Georgia,serif;font-weight:500}h1{font-size:clamp(42px,9vw,68px);line-height:1.02;margin:12px 0 16px;color:var(--gold)}h2{font-size:clamp(30px,7vw,43px);line-height:1.1;margin:12px 0 18px}.lead{max-width:470px;margin:0 auto;color:#c4cbe2;line-height:1.85;font-size:15px}.panel{border:1px solid var(--line);border-radius:25px;padding:clamp(22px,5vw,36px);background:linear-gradient(145deg,rgba(24,33,70,.88),rgba(11,16,40,.88));box-shadow:0 24px 80px rgba(0,0,0,.2);backdrop-filter:blur(14px)}
+.chapter{display:flex;align-items:center;gap:12px;margin-bottom:22px}.chapter-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:rgba(255,229,166,.1);font-size:22px;border:1px solid rgba(255,229,166,.18)}
+.story{font-size:15px;line-height:1.85;color:#d5daf0;margin:0 0 25px}.question{font:italic 22px/1.45 "Playfair Display",serif;color:var(--gold);margin:24px 0}.answers{display:grid;gap:11px}.answer{width:100%;text-align:left;padding:15px 17px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--white);font:500 14px Manrope;cursor:pointer;transition:.2s}.answer:hover:not(:disabled){border-color:rgba(255,229,166,.6);background:rgba(255,229,166,.08);transform:translateY(-2px)}.answer:disabled{cursor:default;opacity:.65}.answer.correct{border-color:var(--green);background:rgba(93,190,157,.13);opacity:1}.answer.wrong{border-color:#e99aaa;background:rgba(233,154,170,.1);opacity:1}
+.feedback{min-height:28px;margin:17px 0 0;color:var(--green);font-size:13px;line-height:1.6}.btn{display:inline-flex;justify-content:center;align-items:center;gap:9px;border:0;border-radius:999px;padding:14px 23px;background:linear-gradient(110deg,#ffe7ad,#e9c5e6);color:#1b1b32;font:800 12px Manrope;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 30px rgba(234,198,210,.15);transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}.actions{display:flex;justify-content:center;margin-top:24px}.hidden{display:none!important}
+.fragments{display:flex;justify-content:center;gap:12px;margin:25px 0}.fragment{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;color:transparent;background:rgba(255,255,255,.025);font-size:17px}.fragment.found{color:var(--gold);border-color:rgba(255,229,166,.45);background:rgba(255,229,166,.1);box-shadow:0 0 20px rgba(255,229,166,.12)}
+.reward{text-align:center;padding:18px 4px}.reward .big{font-size:54px;margin-bottom:14px;filter:drop-shadow(0 0 20px rgba(255,229,166,.35))}.reward p{color:#c9d0e8;line-height:1.8;max-width:460px;margin:0 auto}.ending{text-align:center;padding:20px 4px}.ending .seal{font-size:58px;margin:0 0 18px}.ending blockquote{font:italic 22px/1.55 "Playfair Display",serif;color:var(--gold);margin:22px auto;max-width:520px}.small{font-size:11px;color:var(--muted);line-height:1.7;margin-top:22px}
+@media(max-width:480px){.wrap{padding:18px 16px 28px}.progress{margin:17px 0 25px}.hero{padding:16px 0 26px}.orb{width:94px;height:94px;font-size:38px}.panel{border-radius:21px}.answer{padding:14px}.story{font-size:14px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html">← VOLVER A LAS ESTRELLAS</a><span class="tag">Una aventura para Len</span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<main><section class="screen" id="app" aria-live="polite">
+<div class="hero"><div class="orb">✦</div><p class="mono">ARCHIVO CELESTE · EXPEDICIÓN 001</p><h1>Los fragmentos<br>del cielo</h1><p class="lead">Hay algo extraño ocurriendo en este universo. Cuatro fragmentos se han perdido y solo alguien con curiosidad suficiente podrá reunirlos.</p><div class="actions"><button class="btn" id="start">Comenzar aventura <span>✧</span></button></div><p class="small">No hay prisa. Explora, piensa y disfruta el viaje.</p></div>
+</section></main>
+<div class="fragments" id="fragments" aria-label="Fragmentos encontrados"><span class="fragment">✦</span><span class="fragment">✦</span><span class="fragment">✦</span><span class="fragment">✦</span></div>
+</div>
+<script>
+(function(){
+const app=document.getElementById('app'),bar=document.getElementById('bar'),slots=[...document.querySelectorAll('.fragment')];
+const levels=[
+{icon:'🌲',name:'El bosque de luciérnagas',story:'El camino termina en un bosque suspendido sobre nubes. Miles de luces pequeñas se encienden y se apagan, como si intentaran decirte algo. Una luciérnaga se posa frente a ti y bloquea el sendero.',q:'No tengo voz, pero puedo devolverte lo que dices. ¿Quién soy?',a:['El viento','El eco','La lluvia'],correct:1,success:'¡Eso era! El eco repite lo que recibe, igual que una buena conversación puede quedarse resonando mucho después de terminar.'},
+{icon:'📚',name:'La biblioteca flotante',story:'Llegas a una biblioteca cuyas estanterías flotan en el aire. Un libro sin título se abre solo. En sus páginas aparece una frase incompleta y una llave diminuta cae sobre la mesa.',q:'¿Qué puede crecer cuando se comparte, aunque nadie pueda guardarlo en un bolsillo?',a:['La amistad','Una sombra','El silencio'],correct:0,success:'Correcto. Hay cosas que no se gastan al compartirlas; a veces se hacen más grandes.'},
+{icon:'🌉',name:'El puente de los ecos',story:'Un puente de cristal conecta dos islas que parecen estar a años luz. Para cruzarlo, debes resolver el acertijo de un pequeño guardián mecánico.',q:'Puedo cruzar países sin tener piernas, acercar voces sin mover el mundo. ¿Qué soy?',a:['Una brújula','Una llamada','Un barco'],correct:1,success:'¡Lo encontraste! A veces una voz basta para que la distancia se sienta un poquito menos enorme.'},
+{icon:'☄️',name:'El corazón del cometa',story:'Al final del viaje encuentras un cometa detenido en mitad del cielo. Su luz está apagada. Dentro hay un último mecanismo: no busca una respuesta difícil, sino una decisión.',q:'¿Qué hace que una aventura valga la pena?',a:['Llegar primero','No equivocarse nunca','Lo que descubres y compartes en el camino'],correct:2,success:'Esa era la respuesta. El destino importa, pero también las pequeñas cosas que hacen memorable el recorrido.'}
+];
+let level=0,locked=false;
+function progress(){bar.style.width=(level/4*100)+'%';slots.forEach((s,i)=>s.classList.toggle('found',i<level))}
+function renderLevel(){
+locked=false;const x=levels[level];
+app.innerHTML='<div class="panel"><div class="chapter"><div class="chapter-icon">'+x.icon+'</div><div><div class="mono">SECTOR 0'+(level+1)+' · FRAGMENTO '+(level+1)+'/4</div><div style="color:var(--gold);font-size:13px;margin-top:5px">'+x.name+'</div></div></div><p class="story">'+x.story+'</p><div class="mono">ACERTIJO DEL GUARDIÁN</div><div class="question">'+x.q+'</div><div class="answers">'+x.a.map((a,i)=>'<button class="answer" data-i="'+i+'">'+String.fromCharCode(65+i)+'. &nbsp;'+a+'</button>').join('')+'</div><p class="feedback" id="feedback" role="status"></p><div class="actions"><button class="btn hidden" id="next">Continuar →</button></div></div>';
+app.querySelectorAll('.answer').forEach(b=>b.addEventListener('click',()=>choose(Number(b.dataset.i))));
+}
+function choose(i){
+if(locked)return;const x=levels[level],buttons=[...app.querySelectorAll('.answer')],feedback=document.getElementById('feedback');
+if(i!==x.correct){buttons[i].classList.add('wrong');feedback.style.color='#f0b0bf';feedback.textContent='No es esa todavía. Respira, vuelve a leer la pista e inténtalo otra vez.';return}
+locked=true;buttons.forEach((b,j)=>{b.disabled=true;if(j===i)b.classList.add('correct')});feedback.textContent=x.success;document.getElementById('next').classList.remove('hidden');
+}
+function reward(){
+level++;progress();
+if(level<4){app.innerHTML='<div class="panel reward"><div class="big">✧</div><p class="mono">FRAGMENTO RECUPERADO</p><h2>Una luz vuelve al cielo</h2><p>'+levels[level-1].success+'</p><div class="actions"><button class="btn" id="nextLevel">Siguiente sector →</button></div></div>';document.getElementById('nextLevel').addEventListener('click',renderLevel)}
+else{bar.style.width='100%';app.innerHTML='<div class="panel ending"><div class="seal">🌠</div><p class="mono">EXPEDICIÓN COMPLETADA</p><h2>El cielo volvió a encenderse</h2><p class="story">Los cuatro fragmentos encontraron su lugar. El universo ya no parece tan inmenso cuando hay pequeñas luces que te recuerdan lo bonito de descubrir algo nuevo.</p><blockquote>«Que nunca te falten motivos para sentir curiosidad, lugares nuevos por descubrir y personas con quienes compartir las historias del camino».</blockquote><p style="color:var(--pink)">Fin de la aventura. Gracias por jugar. ✦</p><div class="actions"><button class="btn" id="again">Volver a jugar</button></div><p class="small">Puedes repetir el recorrido cuando quieras.</p></div>';document.getElementById('again').addEventListener('click',()=>{level=0;progress();renderLevel()})}
+}
+document.getElementById('start').addEventListener('click',renderLevel);
+app.addEventListener('click',e=>{if(e.target&&e.target.id==='next')reward()});
+progress();
+})();
+</script></body></html>
